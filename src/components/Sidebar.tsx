@@ -21,8 +21,8 @@ const Sidebar = () => {
       icon: "bi-journal-text",
       roles: ["Administrador", "Técnico", "Cliente"],
       subItems: [
-        { href: "/ordenes", label: "Ver Órdenes", icon: "bi-list-task" },
-        { href: "/ordenes/agregar", label: "Agregar Orden", icon: "bi-plus-circle" },
+        { href: "/ordenes", label: "Ver Órdenes", icon: "bi-list-task", roles: ["Administrador", "Técnico", "Cliente"] },
+        { href: "/ordenes/agregar", label: "Agregar Orden", icon: "bi-plus-circle", roles: ["Administrador", "Técnico"] },
       ],
     },
     { href: "/clientes", label: "Clientes", icon: "bi-person-badge", roles: ["Administrador"] },
@@ -73,13 +73,15 @@ const Sidebar = () => {
                   </button>
                   {isOrdersOpen && (
                     <ul className="nav flex-column ms-3">
-                      {subItems.map(({ href, label, icon }) => (
-                        <li key={href} className="nav-item">
-                          <Link href={href} className={`nav-link text-white ${pathname === href ? "active" : ""}`}>
-                            <i className={`bi ${icon} fs-6 me-2`}></i> {label}
-                          </Link>
-                        </li>
-                      ))}
+                      {subItems
+                        .filter(({ roles }) => role && roles.includes(role))
+                        .map(({ href, label, icon }) => (
+                          <li key={href} className="nav-item">
+                            <Link href={href} className={`nav-link text-white ${pathname === href ? "active" : ""}`}>
+                              <i className={`bi ${icon} fs-6 me-2`}></i> {label}
+                            </Link>
+                          </li>
+                        ))}
                     </ul>
                   )}
                 </>

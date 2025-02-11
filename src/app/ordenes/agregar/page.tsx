@@ -18,6 +18,10 @@ const AddOrderPage = () => {
         technicianId: "",
         workOrderNumber: "",
         equipoId: "",
+        tipoEquipo: "",
+        marca: "",
+        modelo: "",
+        numeroSerie: "",
         problemaReportado: "",
         accesorios: "",
         Estado: "En Revisión",
@@ -135,7 +139,7 @@ const AddOrderPage = () => {
                 return;
             }
 
-            router.push("/orders");
+            router.push("/ordenes");
         } catch (error) {
             console.error("Error:", error);
             setError("Error al guardar la orden");
@@ -170,10 +174,14 @@ const AddOrderPage = () => {
 
             const equipoAgregado = await res.json();
 
-            // Actualizar el estado del formulario con el ID del equipo agregado
+            // Actualizar el estado del formulario con los datos del equipo agregado
             setFormData((prevData) => ({
                 ...prevData,
                 equipoId: equipoAgregado.id,
+                tipoEquipo: equipoAgregado.tipoEquipo,
+                marca: equipoAgregado.marca,
+                modelo: equipoAgregado.modelo,
+                numeroSerie: equipoAgregado.numeroSerie,
             }));
 
             setAddEquipoModal(false);
@@ -253,12 +261,12 @@ const AddOrderPage = () => {
                 <Header />
 
                 <div className="container mt-4">
-                    <h1 className="mb-4 text-primary">Agregar Nueva Orden</h1>
+                    <h1 className="mb-4 text-dark">Agregar Nueva Orden</h1>
                     {error && <div className="alert alert-danger">{error}</div>}
 
-                    <form onSubmit={handleSubmit} className="bg-light p-4 rounded shadow-sm">
+                    <form onSubmit={handleSubmit} className="bg-light p-4 rounded shadow-lg border border-primary" style={{ boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)" }}>
                         <div className="mb-3">
-                            <label htmlFor="clientId" className="form-label">Cliente</label>
+                            <label htmlFor="clientId" className="form-label text-dark"><b>Cliente</b></label>
                             <div className="d-flex gap-2">
                                 <select
                                     className="form-select"
@@ -280,7 +288,7 @@ const AddOrderPage = () => {
                                     className="btn btn-primary d-flex align-items-center"
                                     onClick={() => setAddModal(true)}
                                 >
-                                    <i className="bi bi-plus me-2"></i> Crear Cliente
+                                    <i className="bi bi-plus me-2"></i> Agregar Cliente
                                 </button>
                             </div>
                             {formData.clientId && (
@@ -291,7 +299,7 @@ const AddOrderPage = () => {
                         </div>
 
                         <div className="mb-3">
-                            <label htmlFor="technicianId" className="form-label">Técnico</label>
+                            <label htmlFor="technicianId" className="form-label text-dark"><b>Técnico</b></label>
                             <select
                                 className="form-select"
                                 id="technicianId"
@@ -315,7 +323,7 @@ const AddOrderPage = () => {
                         </div>
 
                         <div className="mb-3">
-                            <label htmlFor="workOrderNumber" className="form-label">Número de Orden de Trabajo</label>
+                            <label htmlFor="workOrderNumber" className="form-label text-dark"><b>Número de Orden de Trabajo</b></label>
                             <input
                                 type="text"
                                 className="form-control"
@@ -328,7 +336,7 @@ const AddOrderPage = () => {
                         </div>
 
                         <div className="mb-3">
-                            <label htmlFor="equipoId" className="form-label">Equipo</label>
+                            <label htmlFor="equipoId" className="form-label text-dark"><b>Equipo</b></label>
                             <div className="d-flex gap-2">
                                 <input
                                     type="text"
@@ -350,8 +358,59 @@ const AddOrderPage = () => {
                             </div>
                         </div>
 
+                        {formData.equipoId && (
+                            <div className="mb-3">
+                                <div className="row">
+                                    <div className="col-md-3">
+                                        <label htmlFor="tipoEquipo" className="form-label text-dark"><b>Tipo de Equipo</b></label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            id="tipoEquipo"
+                                            name="tipoEquipo"
+                                            value={formData.tipoEquipo}
+                                            readOnly
+                                        />
+                                    </div>
+                                    <div className="col-md-3">
+                                        <label htmlFor="marca" className="form-label text-dark"><b>Marca</b></label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            id="marca"
+                                            name="marca"
+                                            value={formData.marca}
+                                            readOnly
+                                        />
+                                    </div>
+                                    <div className="col-md-3">
+                                        <label htmlFor="modelo" className="form-label text-dark"><b>Modelo</b></label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            id="modelo"
+                                            name="modelo"
+                                            value={formData.modelo}
+                                            readOnly
+                                        />
+                                    </div>
+                                    <div className="col-md-3">
+                                        <label htmlFor="numeroSerie" className="form-label text-dark"><b>Número de Serie</b></label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            id="numeroSerie"
+                                            name="numeroSerie"
+                                            value={formData.numeroSerie}
+                                            readOnly
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
                         <div className="mb-3">
-                            <label htmlFor="problemaReportado" className="form-label">Problema Reportado</label>
+                            <label htmlFor="problemaReportado" className="form-label text-dark"><b>Problema Reportado</b></label>
                             <input
                                 type="text"
                                 className="form-control"
@@ -364,7 +423,7 @@ const AddOrderPage = () => {
                         </div>
 
                         <div className="mb-3">
-                            <label htmlFor="accesorios" className="form-label">Accesorios Dejados (separados por comas)</label>
+                            <label htmlFor="accesorios" className="form-label text-dark"><b>Accesorios</b></label>
                             <input
                                 type="text"
                                 className="form-control"
@@ -376,36 +435,56 @@ const AddOrderPage = () => {
                         </div>
 
                         <div className="mb-3">
-                            <label htmlFor="Estado" className="form-label">Estado</label>
+                            <label htmlFor="Estado" className="form-label text-dark"><b>Estado</b></label>
                             <select
-                                className="form-control"
+                                className="form-select"
                                 id="Estado"
                                 name="Estado"
                                 value={formData.Estado}
                                 onChange={handleChange}
                                 required
                             >
+                                <option value="Pendiente">Pendiente</option>
                                 <option value="En Revisión">En Revisión</option>
-                                <option value="En Progreso">En Progreso</option>
-                                <option value="Completado">Completado</option>
+                                <option value="En Reparación">En Reparación</option>
+                                <option value="En Espera del Cliente">En Espera del Cliente</option>
+                                <option value="Rechazado">Rechazado</option>
+                                <option value="En Espera de Partes">En Espera de Partes</option>
+                                <option value="Cancelada">Cancelada</option>
+                                <option value="En Prueba">En Prueba</option>
+                                <option value="Terminado">Terminado</option>
+                                <option value="Listo">Listo</option>
                             </select>
                         </div>
 
                         <div className="mb-3">
-                            <label htmlFor="tareaRealizar" className="form-label">Tarea a Realizar</label>
-                            <input
-                                type="text"
-                                className="form-control"
+                            <label htmlFor="tareaRealizar" className="form-label text-dark"><b>Tarea a Realizar</b></label>
+                            <select
+                                className="form-select"
                                 id="tareaRealizar"
                                 name="tareaRealizar"
                                 value={formData.tareaRealizar}
                                 onChange={handleChange}
                                 required
-                            />
+                            >
+                                <option value="Revisión">Revisión</option>
+                                <option value="Reparación">Reparación</option>
+                                <option value="Reparación en Garantía">Reparación en Garantía</option>
+                                <option value="Mantenimiento">Mantenimiento</option>
+                                <option value="Actualización de Software">Actualización de Software</option>
+                                <option value="Recuperación de Datos">Recuperación de Datos</option>
+                                <option value="Sustitución de Partes">Sustitución de Partes</option>
+                                <option value="Diagnóstico">Diagnóstico</option>
+                                <option value="Actualización de Firmware">Actualización de Firmware</option>
+                                <option value="Instalación de Software">Instalación de Software</option>
+                                <option value="Inspección de Seguridad">Inspección de Seguridad</option>
+                                <option value="Verificación de Rendimiento">Verificación de Rendimiento</option>
+                                <option value="Servicio de Limpieza">Servicio de Limpieza</option>
+                            </select>
                         </div>
 
                         <div className="mb-3">
-                            <label htmlFor="fechaPrometidaEntrega" className="form-label">Fecha Prometida de Entrega</label>
+                            <label htmlFor="fechaPrometidaEntrega" className="form-label text-dark"><b>Fecha Prometida de Entrega</b></label>
                             <input
                                 type="datetime-local"
                                 className="form-control"
@@ -439,7 +518,7 @@ const AddOrderPage = () => {
                                 <form onSubmit={handleAddEquipo}>
                                     <div className="modal-body">
                                         <div className="mb-3">
-                                            <label htmlFor="tipoEquipo" className="form-label">Tipo de Equipo</label>
+                                            <label htmlFor="tipoEquipo" className="form-label text-dark">Tipo de Equipo</label>
                                             <input
                                                 type="text"
                                                 className="form-control"
@@ -451,7 +530,7 @@ const AddOrderPage = () => {
                                             />
                                         </div>
                                         <div className="mb-3">
-                                            <label htmlFor="marca" className="form-label">Marca</label>
+                                            <label htmlFor="marca" className="form-label text-dark">Marca</label>
                                             <input
                                                 type="text"
                                                 className="form-control"
@@ -463,7 +542,7 @@ const AddOrderPage = () => {
                                             />
                                         </div>
                                         <div className="mb-3">
-                                            <label htmlFor="modelo" className="form-label">Modelo</label>
+                                            <label htmlFor="modelo" className="form-label text-dark">Modelo</label>
                                             <input
                                                 type="text"
                                                 className="form-control"
@@ -475,7 +554,7 @@ const AddOrderPage = () => {
                                             />
                                         </div>
                                         <div className="mb-3">
-                                            <label htmlFor="numeroSerie" className="form-label">Número de Serie</label>
+                                            <label htmlFor="numeroSerie" className="form-label text-dark">Número de Serie</label>
                                             <input
                                                 type="text"
                                                 className="form-control"
@@ -518,7 +597,7 @@ const AddOrderPage = () => {
                                 <form onSubmit={handleAddClient}>
                                     <div className="modal-body">
                                         <div className="mb-3">
-                                            <label htmlFor="nombre" className="form-label">Nombre</label>
+                                            <label htmlFor="nombre" className="form-label text-dark">Nombre</label>
                                             <input
                                                 type="text"
                                                 className="form-control"
@@ -530,7 +609,7 @@ const AddOrderPage = () => {
                                             />
                                         </div>
                                         <div className="mb-3">
-                                            <label htmlFor="cedula" className="form-label">Cédula</label>
+                                            <label htmlFor="cedula" className="form-label text-dark">Cédula</label>
                                             <input
                                                 type="text"
                                                 className="form-control"
@@ -543,7 +622,7 @@ const AddOrderPage = () => {
                                             {cedulaError && <div className="text-danger">{cedulaError}</div>}
                                         </div>
                                         <div className="mb-3">
-                                            <label htmlFor="correo" className="form-label">Correo</label>
+                                            <label htmlFor="correo" className="form-label text-dark">Correo</label>
                                             <input
                                                 type="email"
                                                 className="form-control"
@@ -556,7 +635,7 @@ const AddOrderPage = () => {
                                             {emailError && <div className="text-danger">{emailError}</div>}
                                         </div>
                                         <div className="mb-3">
-                                            <label htmlFor="password" className="form-label">Contraseña</label>
+                                            <label htmlFor="password" className="form-label text-dark">Contraseña</label>
                                             <input
                                                 type="password"
                                                 className="form-control"
@@ -568,7 +647,7 @@ const AddOrderPage = () => {
                                             />
                                         </div>
                                         <div className="mb-3">
-                                            <label htmlFor="telefono" className="form-label">Teléfono</label>
+                                            <label htmlFor="telefono" className="form-label text-dark">Teléfono</label>
                                             <input
                                                 type="text"
                                                 className="form-control"
@@ -581,7 +660,7 @@ const AddOrderPage = () => {
                                             {telefonoError && <div className="text-danger">{telefonoError}</div>}
                                         </div>
                                         <div className="mb-3">
-                                            <label htmlFor="direccion" className="form-label">Dirección</label>
+                                            <label htmlFor="direccion" className="form-label text-dark">Dirección</label>
                                             <input
                                                 type="text"
                                                 className="form-control"
@@ -593,7 +672,7 @@ const AddOrderPage = () => {
                                             />
                                         </div>
                                         <div className="mb-3">
-                                            <label htmlFor="ciudad" className="form-label">Ciudad</label>
+                                            <label htmlFor="ciudad" className="form-label text-dark">Ciudad</label>
                                             <input
                                                 type="text"
                                                 className="form-control"
