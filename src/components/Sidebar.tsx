@@ -7,7 +7,7 @@ import useUserRole from "@/hooks/useUserRole";
 
 const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(true);
-  const [isOrdersOpen, setIsOrdersOpen] = useState(false);
+  const [isConciliationsOpen, setIsConciliationsOpen] = useState(false);
 
   const pathname = usePathname();
   const role = useUserRole();
@@ -15,21 +15,20 @@ const Sidebar = () => {
   if (!role) return null;
 
   const menuItems = [
-    { href: "/dashboard", label: "Dashboard", icon: "bi-speedometer2", roles: ["Administrador", "Técnico", "Cliente"] },
+    { href: "/dashboard", label: "Dashboard", icon: "bi-speedometer2", roles: ["Administrador", "Contador"] },
     {
-      label: "Órdenes",
-      icon: "bi-journal-text",
-      roles: ["Administrador", "Técnico", "Cliente"],
+      label: "Cuenta Bancaria",
+      icon: "bi-journal-check",
+      roles: ["Administrador", "Contador"],
       subItems: [
-        { href: "/ordenes", label: "Ver Órdenes", icon: "bi-list-task", roles: ["Administrador", "Técnico", "Cliente"] },
-        { href: "/ordenes/agregar", label: "Agregar Orden", icon: "bi-plus-circle", roles: ["Administrador", "Técnico"] },
+        { href: "/cuentabancaria", label: "Ver Cuentas Bancarias ", icon: "bi-file-earmark-check", roles: ["Administrador", "Contador"] },
+        { href: "/cuentabancaria/agregar", label: "Agregar Cuentas Bancarias", icon: "bi-plus-circle", roles: ["Administrador", "Contador"] },
       ],
     },
-    { href: "/clientes", label: "Clientes", icon: "bi-person-badge", roles: ["Administrador"] },
-    { href: "/repuestos", label: "Repuestos", icon: "bi-tools", roles: ["Administrador", "Técnico"] },
-    { href: "/servicios", label: "Servicios", icon: "bi-briefcase-fill", roles: ["Administrador", "Técnico"] },
-    { href: "/casilleros", label: "Casilleros", icon: "bi-box-seam", roles: ["Administrador"] },
-    { href: "/configuracion", label: "Configuración", icon: "bi-gear-wide-connected", roles: ["Administrador", "Técnico"] },
+    { href: "/cuentas", label: "Cuentas", icon: "bi-bank", roles: ["Administrador", "Contador"] },
+    { href: "/transacciones", label: "Transacciones", icon: "bi-arrow-right-left", roles: ["Administrador", "Contador"] },
+    { href: "/reportes", label: "Reportes", icon: "bi-graph-up-arrow", roles: ["Administrador", "Contador"] },
+    { href: "/configuracion", label: "Configuración", icon: "bi-gear-wide-connected", roles: ["Administrador"] },
   ];
 
   return (
@@ -65,13 +64,13 @@ const Sidebar = () => {
                 <>
                   <button
                     className="nav-link btn w-100 text-start d-flex align-items-center"
-                    onClick={() => setIsOrdersOpen(!isOrdersOpen)}
+                    onClick={() => setIsConciliationsOpen(!isConciliationsOpen)}
                   >
                     <i className={`bi ${icon} fs-5 me-2`}></i>
                     {!isCollapsed && label}
-                    <i className={`bi ms-auto ${isOrdersOpen ? "bi-chevron-up" : "bi-chevron-down"}`}></i>
+                    <i className={`bi ms-auto ${isConciliationsOpen ? "bi-chevron-up" : "bi-chevron-down"}`}></i>
                   </button>
-                  {isOrdersOpen && (
+                  {isConciliationsOpen && (
                     <ul className="nav flex-column ms-3">
                       {subItems
                         .filter(({ roles }) => role && roles.includes(role))

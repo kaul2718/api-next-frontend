@@ -41,8 +41,8 @@ const Header = () => {
     >
       <div className="d-flex align-items-center">
         <Link href="/" className="d-flex align-items-center text-white text-decoration-none">
-          <Image src="/logohdc.png" alt="Hospital del Computador" width={40} height={40} />
-          <span className="fw-bold fs-5 ms-2">Hospital del Computador</span>
+          <Image src="/banco.png" alt="Hospital del Computador" width={50} height={50} />
+          <span className="fw-bold fs-5 ms-2">Conciliación Bancaria</span>
         </Link>
       </div>
 

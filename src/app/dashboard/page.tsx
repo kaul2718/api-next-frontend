@@ -13,7 +13,7 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Tooltip, Le
 
 const DashboardPage = () => {
   const { data: session } = useSession();
-  const [orders, setOrders] = useState<any[]>([]);
+  const [transactions, setTransactions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const role = useUserRole();
 
@@ -22,14 +22,14 @@ const DashboardPage = () => {
       return;
     }
 
-    const fetchOrders = async () => {
+    const fetchTransactions = async () => {
       try {
-        let url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/orders`;
+        let url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/transactions`;
 
-        if (role === "Técnico") {
-          url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/orders/tecnico`;
+        if (role === "Administrador") {
+          url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/transactions/admin`;
         } else if (role === "Cliente") {
-          url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/orders/cliente`;
+          url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/transactions/cliente`;
         }
 
         const res = await fetch(url, {
@@ -41,19 +41,19 @@ const DashboardPage = () => {
         });
 
         if (!res.ok) {
-          throw new Error(`Error fetching orders: ${res.status}`);
+          throw new Error(`Error fetching transactions: ${res.status}`);
         }
 
         const data = await res.json();
-        setOrders(data);
+        setTransactions(data);
       } catch (error) {
-        console.error("Error fetching orders:", error);
+        console.error("Error fetching transactions:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchOrders();
+    fetchTransactions();
   }, [session?.user?.token, role]);
 
   if (loading) {
@@ -61,37 +61,37 @@ const DashboardPage = () => {
   }
 
   // Datos para gráficos y métricas
-  const orderCount = orders.length;
-  const ordersByStatus = orders.reduce((acc, order) => {
-    acc[order.estado] = (acc[order.estado] || 0) + 1;
+  const transactionCount = transactions.length;
+  const transactionsByStatus = transactions.reduce((acc, transaction) => {
+    acc[transaction.estado] = (acc[transaction.estado] || 0) + 1;
     return acc;
   }, {});
 
-  const ordersByClient = orders.reduce((acc, order) => {
-    const clientName = order.technician?.nombre || "Cliente no disponible";
-    acc[clientName] = (acc[clientName] || 0) + 1;
+  const transactionsByAccount = transactions.reduce((acc, transaction) => {
+    const accountName = transaction.cuenta?.nombre || "Cuenta no disponible";
+    acc[accountName] = (acc[accountName] || 0) + 1;
     return acc;
   }, {});
 
-  // Datos para el gráfico de barras (Órdenes por Cliente)
+  // Datos para el gráfico de barras (Transacciones por Cuenta)
   const barChartData = {
-    labels: Object.keys(ordersByClient),
+    labels: Object.keys(transactionsByAccount),
     datasets: [
       {
-        label: "Órdenes",
-        data: Object.values(ordersByClient),
+        label: "Transacciones",
+        data: Object.values(transactionsByAccount),
         backgroundColor: "rgba(75, 192, 192, 0.6)",
       },
     ],
   };
 
-  // Datos para el gráfico de pastel (Órdenes por Estado)
+  // Datos para el gráfico de pastel (Transacciones por Estado)
   const pieChartData = {
-    labels: Object.keys(ordersByStatus),
+    labels: Object.keys(transactionsByStatus),
     datasets: [
       {
-        label: "Órdenes",
-        data: Object.values(ordersByStatus),
+        label: "Transacciones",
+        data: Object.values(transactionsByStatus),
         backgroundColor: [
           "rgba(255, 99, 132, 0.6)",
           "rgba(54, 162, 235, 0.6)",
@@ -117,17 +117,17 @@ const DashboardPage = () => {
             <div className="col-md-4">
               <div className="card">
                 <div className="card-header bg-primary text-white">
-                  <h5 className="card-title mb-0">Total Órdenes</h5>
+                  <h5 className="card-title mb-0">Total Transacciones</h5>
                 </div>
                 <div className="card-body">
-                  <h2 className="card-text">{orderCount}</h2>
+                  <h2 className="card-text">{transactionCount}</h2>
                 </div>
               </div>
             </div>
             <div className="col-md-4">
               <div className="card">
                 <div className="card-header bg-success text-white">
-                  <h5 className="card-title mb-0">Órdenes por Estado</h5>
+                  <h5 className="card-title mb-0">Transacciones por Estado</h5>
                 </div>
                 <div className="card-body">
                   <Pie data={pieChartData} />
@@ -137,7 +137,7 @@ const DashboardPage = () => {
             <div className="col-md-4">
               <div className="card">
                 <div className="card-header bg-warning text-white">
-                  <h5 className="card-title mb-0">Órdenes por Técnico</h5>
+                  <h5 className="card-title mb-0">Transacciones por Cuenta</h5>
                 </div>
                 <div className="card-body">
                   <Bar data={barChartData} options={{ responsive: true }} />
@@ -151,26 +151,26 @@ const DashboardPage = () => {
             <div className="col-md-12">
               <div className="card">
                 <div className="card-header bg-info text-white">
-                  <h5 className="card-title mb-0">Actividad Reciente</h5>
+                  <h5 className="card-title mb-0">Transacciones Recientes</h5>
                 </div>
                 <div className="card-body">
-                  {/* Aquí puedes agregar una tabla de actividades recientes */}
+                  {/* Aquí puedes agregar una tabla de transacciones recientes */}
                   <table className="table table-bordered">
                     <thead>
                       <tr>
-                        <th>Orden de Trabajo</th>
-                        <th>Cliente</th>
-                        <th>Fecha de Ingreso</th>
+                        <th>Transacción</th>
+                        <th>Cuenta</th>
+                        <th>Fecha</th>
                         <th>Estado</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {orders.slice(0, 5).map((order) => (
-                        <tr key={order.id}>
-                          <td>{order.workOrderNumber}</td>
-                          <td>{order.client?.nombre || "Cliente no disponible"}</td>
-                          <td>{new Date(order.fechaIngreso).toLocaleDateString()}</td>
-                          <td>{order.estado}</td>
+                      {transactions.slice(0, 5).map((transaction) => (
+                        <tr key={transaction.id}>
+                          <td>{transaction.transactionNumber}</td>
+                          <td>{transaction.cuenta?.nombre || "Cuenta no disponible"}</td>
+                          <td>{new Date(transaction.fecha).toLocaleDateString()}</td>
+                          <td>{transaction.estado}</td>
                         </tr>
                       ))}
                     </tbody>
